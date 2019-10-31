@@ -49,6 +49,7 @@ public abstract class AbstractExcelItemReader<T> extends AbstractItemCountingIte
     private boolean strict = true;
     private RowSetFactory rowSetFactory = new DefaultRowSetFactory();
     private RowSet rs;
+    private SheetOpenListener sheetOpenListener;
 
     public AbstractExcelItemReader() {
         super();
@@ -125,6 +126,10 @@ public abstract class AbstractExcelItemReader<T> extends AbstractItemCountingIte
             logger.debug("Opening sheet " + sheet.getName() + ".");
         }
 
+        if (sheetOpenListener != null) {
+            sheetOpenListener.onSheetOpen(currentSheet, sheet.getName());
+        }
+        
         for (int i = 0; i < this.linesToSkip; i++) {
             if (rs.next() && this.skippedRowsCallback != null) {
                 this.skippedRowsCallback.handleRow(rs);
@@ -214,5 +219,9 @@ public abstract class AbstractExcelItemReader<T> extends AbstractItemCountingIte
      */
     public void setSkippedRowsCallback(final RowCallbackHandler skippedRowsCallback) {
         this.skippedRowsCallback = skippedRowsCallback;
+    }
+
+    public void setSheetOpenListener(SheetOpenListener sheetOpenListener) {
+        this.sheetOpenListener = sheetOpenListener;
     }
 }
