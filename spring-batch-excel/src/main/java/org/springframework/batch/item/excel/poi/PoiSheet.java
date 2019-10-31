@@ -121,7 +121,13 @@ public class PoiSheet implements Sheet {
     @Override
     public int getNumberOfColumns() {
         if (numberOfColumns < 0) {
-            numberOfColumns = this.delegate.getRow(0).getLastCellNum();
+            for (int i = 0; i < getNumberOfRows(); i++) {
+                Row row = delegate.getRow(i);
+                if (row != null) {
+                    numberOfColumns = row.getLastCellNum();
+                    break;
+                }
+            }
         }
         return numberOfColumns;
     }
